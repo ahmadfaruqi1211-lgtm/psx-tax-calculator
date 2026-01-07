@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pakistan Stock Tax Calculator - Test Case</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+        }
+        .result {
+            background: #f0f9ff;
+            padding: 15px;
+            border-left: 4px solid #2563eb;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d1fae5;
+            border-left-color: #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .label {
+            font-weight: bold;
+            color: #64748b;
+        }
+        .value {
+            color: #1e293b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pakistan Stock Tax Calculator - FIFO Test Case</h1>
+
+    <div class="test-section">
+        <h2>Test Scenario</h2>
+        <pre>
+Buy 100 OGDC @ Rs. 100 on Jan 1, 2025
+Buy 50 OGDC @ Rs. 120 on Feb 1, 2025
+Sell 120 OGDC @ Rs. 150 on Mar 1, 2025
+        </pre>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Results</h2>
+        <div class="result">
+            <div><span class="label">Lot 1 (FIFO):</span> <span class="value">100 shares @ Rs. 100</span></div>
+            <div><span class="label">Lot 2 (FIFO):</span> <span class="value">20 shares @ Rs. 120</span></div>
+            <div><span class="label">Cost Basis:</span> <span class="value">Rs. 12,400 (100×100 + 20×120)</span></div>
+            <div><span class="label">Sale Proceeds:</span> <span class="value">Rs. 18,000 (120×150)</span></div>
+            <div><span class="label">Capital Gain:</span> <span class="value">Rs. 5,600</span></div>
+            <div><span class="label">Tax Rate:</span> <span class="value">15% (acquired after July 1, 2024)</span></div>
+            <div><span class="label">Tax Liability:</span> <span class="value">Rs. 840</span></div>
+            <div><span class="label">Net Profit After Tax:</span> <span class="value">Rs. 4,760</span></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="testResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <pre id="consoleOutput"></pre>
+    </div>
+
+    <!-- Load JavaScript Modules -->
+    <script src="js/fifo-engine.js"></script>
+    <script src="js/tax-calculator.js"></script>
+
+    <script>
+        // Capture console output
+        const consoleOutput = [];
+        const originalLog = console.log;
+        console.log = function(...args) {
+            consoleOutput.push(args.join(' '));
+            originalLog.apply(console, args);
+        };
+
+        // Run test
+        function runTest() {
+            const results = [];
+
+            try {
+                // Initialize
+                const fifoQueue = new FIFOQueue();
+                const taxCalculator = new TaxCalculator();
+
+                results.push('<h3>Step 1: Add Transactions</h3>');
+
+                // Transaction 1: Buy 100 OGDC @ Rs. 100 on Jan 1, 2025
+                const buy1 = fifoQueue.addTransaction('BUY', 'OGDC', 100, 100, '2025-01-01');
+                results.push(`<div class="result">✓ Buy Transaction 1: ${JSON.stringify(buy1, null, 2)}</div>`);
+
+                // Transaction 2: Buy 50 OGDC @ Rs. 120 on Feb 1, 2025
+                const buy2 = fifoQueue.addTransaction('BUY', 'OGDC', 50, 120, '2025-02-01');
+                results.push(`<div class="result">✓ Buy Transaction 2: ${JSON.stringify(buy2, null, 2)}</div>`);
+
+                // Check holdings before sale
+                results.push('<h3>Step 2: Holdings Before Sale</h3>');
+                const holdingsBeforeSale = fifoQueue.getHoldings();
+                results.push(`<div class="result"><pre>${JSON.stringify(holdingsBeforeSale, null, 2)}</pre></div>`);
+
+                // Transaction 3: Sell 120 OGDC @ Rs. 150 on Mar 1, 2025
+                results.push('<h3>Step 3: Sell Transaction</h3>');
+                const sale = fifoQueue.addTransaction('SELL', 'OGDC', 120, 150, '2025-03-01');
+                results.push(`<div class="result"><pre>${JSON.stringify(sale, null, 2)}</pre></div>`);
+
+                // Calculate tax
+                results.push('<h3>Step 4: Tax Calculation</h3>');
+                const taxCalc = taxCalculator.calculateTaxForSale(sale);
+                results.push(`<div class="result"><pre>${JSON.stringify(taxCalc, null, 2)}</pre></div>`);
+
+                // Verify results
+                results.push('<h3>Step 5: Verification</h3>');
+                const tests = [
+                    { name: 'Cost Basis', expected: 12400, actual: sale.totalCostBasis },
+                    { name: 'Sale Proceeds', expected: 18000, actual: sale.saleProceeds },
+                    { name: 'Capital Gain', expected: 5600, actual: sale.capitalGain },
+                    { name: 'Tax Liability', expected: 840, actual: taxCalc.totalTax },
+                    { name: 'Net Profit After Tax', expected: 4760, actual: taxCalc.netProfit }
+                ];
+
+                let allPassed = true;
+                for (const test of tests) {
+                    const passed = Math.abs(test.actual - test.expected) < 0.01;
+                    allPassed = allPassed && passed;
+                    results.push(`
+                        <div class="result ${passed ? 'success' : 'error'}">
+                            ${passed ? '✓' : '✗'} <strong>${test.name}:</strong>
+                            Expected Rs. ${test.expected.toFixed(2)},
+                            Got Rs. ${test.actual.toFixed(2)}
+                            ${passed ? '' : ' <strong>FAILED</strong>'}
+                        </div>
+                    `);
+                }
+
+                // Overall result
+                if (allPassed) {
+                    results.push('<div class="result success"><h3>✓ ALL TESTS PASSED!</h3></div>');
+                } else {
+                    results.push('<div class="result error"><h3>✗ SOME TESTS FAILED</h3></div>');
+                }
+
+                // Check FIFO lot breakdown
+                results.push('<h3>Step 6: FIFO Lot Breakdown</h3>');
+                results.push('<div class="result">');
+                for (let i = 0; i < sale.lotsUsed.length; i++) {
+                    const lot = sale.lotsUsed[i];
+                    results.push(`
+                        <div>
+                            <strong>Lot ${i + 1}:</strong> ${lot.quantity} shares @ Rs. ${lot.costPerShare}
+                            (Cost: Rs. ${lot.costBasis})
+                        </div>
+                    `);
+                }
+                results.push('</div>');
+
+                // Tax by lot
+                results.push('<h3>Step 7: Tax by Lot</h3>');
+                results.push('<div class="result">');
+                for (let i = 0; i < taxCalc.taxByLot.length; i++) {
+                    const lot = taxCalc.taxByLot[i];
+                    results.push(`
+                        <div>
+                            <strong>Lot ${i + 1}:</strong> ${lot.quantity} shares @ Rs. ${lot.costPerShare}<br>
+                            Gain: Rs. ${lot.gain.toFixed(2)},
+                            Tax Rate: ${lot.taxRatePercentage},
+                            Tax: Rs. ${lot.tax.toFixed(2)}
+                        </div>
+                    `);
+                }
+                results.push('</div>');
+
+                // Holdings after sale
+                results.push('<h3>Step 8: Remaining Holdings</h3>');
+                const holdingsAfterSale = fifoQueue.getHoldings();
+                if (holdingsAfterSale.OGDC) {
+                    results.push(`<div class="result"><pre>${JSON.stringify(holdingsAfterSale.OGDC, null, 2)}</pre></div>`);
+                } else {
+                    results.push('<div class="result">✓ All OGDC shares sold (remaining: 0)</div>');
+                }
+
+            } catch (error) {
+                results.push(`<div class="result error"><strong>Error:</strong> ${error.message}</div>`);
+                console.error(error);
+            }
+
+            // Display results
+            document.getElementById('testResults').innerHTML = results.join('\n');
+            document.getElementById('consoleOutput').textContent = consoleOutput.join('\n');
+        }
+
+        // Run test when page loads
+        runTest();
+    </script>
+</body>
+</html>

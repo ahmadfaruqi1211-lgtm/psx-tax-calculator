@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Actions Test - Pakistan Stock Tax Calculator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #2563eb; margin-bottom: 10px; }
+        h2 { color: #1e40af; margin: 30px 0 15px; border-bottom: 2px solid #2563eb; padding-bottom: 8px; }
+        h3 { color: #64748b; margin: 20px 0 10px; }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .test-section {
+            background: #f8fafc;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #2563eb;
+            border-radius: 4px;
+        }
+
+        .success { background: #d1fae5; border-left-color: #10b981; }
+        .error { background: #fee2e2; border-left-color: #ef4444; }
+        .info { background: #dbeafe; border-left-color: #3b82f6; }
+
+        .label { font-weight: 600; color: #475569; display: inline-block; min-width: 200px; }
+        .value { color: #1e293b; font-weight: 500; }
+        .highlight { background: #fef3c7; padding: 2px 6px; border-radius: 3px; }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.4;
+            margin: 10px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .before-after > div {
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .before { background: #fee2e2; border: 2px solid #ef4444; }
+        .after { background: #d1fae5; border: 2px solid #10b981; }
+
+        .metric {
+            margin: 8px 0;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .card { padding: 15px; }
+            .before-after { grid-template-columns: 1fr; }
+            .label { min-width: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Corporate Actions Test</h1>
+        <p style="color: #64748b; margin-bottom: 30px;">Testing bonus shares and right issues with cost basis adjustments</p>
+
+        <!-- Test 1: Bonus Shares -->
+        <div class="card">
+            <h2>Test 1: Bonus Shares (20%)</h2>
+            <div id="test1Results"></div>
+        </div>
+
+        <!-- Test 2: Right Issue -->
+        <div class="card">
+            <h2>Test 2: Right Issue (1:5 @ Rs. 80)</h2>
+            <div id="test2Results"></div>
+        </div>
+
+        <!-- Test 3: Multiple Actions -->
+        <div class="card">
+            <h2>Test 3: Multiple Corporate Actions</h2>
+            <div id="test3Results"></div>
+        </div>
+
+        <!-- Test 4: Validation Tests -->
+        <div class="card">
+            <h2>Test 4: Validation & Error Handling</h2>
+            <div id="test4Results"></div>
+        </div>
+
+        <!-- Corporate Actions Summary -->
+        <div class="card">
+            <h2>Corporate Actions Summary</h2>
+            <div id="summaryResults"></div>
+        </div>
+
+        <!-- Full Report -->
+        <div class="card">
+            <h2>Detailed Report</h2>
+            <pre id="reportResults"></pre>
+        </div>
+    </div>
+
+    <!-- Load JavaScript Modules -->
+    <script src="js/fifo-engine.js"></script>
+    <script src="js/storage-manager.js"></script>
+    <script src="js/corporate-actions.js"></script>
+
+    <script>
+        // Helper functions
+        function formatCurrency(amount) {
+            return `Rs. ${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-PK', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Test 1: Bonus Shares
+        function test1BonusShares() {
+            const fifoQueue = new FIFOQueue();
+            const storageManager = new StorageManager();
+            const corporateActions = new CorporateActionsManager(fifoQueue, storageManager);
+
+            let html = '<h3>Scenario: 20% Bonus Shares for HBL</h3>';
+
+            try {
+                // Initial purchase
+                fifoQueue.addTransaction('BUY', 'HBL', 100, 100, '2024-01-15');
+
+                const beforeHolding = fifoQueue.getHoldings()['HBL'];
+
+                html += '<div class="before-after">';
+                html += '<div class="before">';
+                html += '<h4>Before Bonus</h4>';
+                html += `<div class="metric"><div class="label">Shares:</div><div class="metric-value">${beforeHolding.totalQuantity}</div></div>`;
+                html += `<div class="metric"><div class="label">Avg Cost:</div><div class="metric-value">${formatCurrency(beforeHolding.averageCost)}</div></div>`;
+                html += `<div class="metric"><div class="label">Total Cost:</div><div class="metric-value">${formatCurrency(beforeHolding.totalCostBasis)}</div></div>`;
+                html += '</div>';
+
+                // Apply 20% bonus
+                const result = corporateActions.applyCorporateAction('HBL', 'BONUS', {
+                    ratio: '20%',
+                    exDate: '2025-03-01'
+                });
+
+                const afterHolding = fifoQueue.getHoldings()['HBL'];
+
+                html += '<div class="after">';
+                html += '<h4>After Bonus</h4>';
+                html += `<div class="metric"><div class="label">Shares:</div><div class="metric-value">${afterHolding.totalQuantity}</div></div>`;
+                html += `<div class="metric"><div class="label">Avg Cost:</div><div class="metric-value">${formatCurrency(afterHolding.averageCost)}</div></div>`;
+                html += `<div class="metric"><div class="label">Total Cost:</div><div class="metric-value">${formatCurrency(afterHolding.totalCostBasis)}</div></div>`;
+                html += '</div>';
+                html += '</div>';
+
+                // Verification
+                html += '<div class="test-section success">';
+                html += '<h4>✓ Verification</h4>';
+                html += `<div><span class="label">Expected Shares:</span> <span class="value">120 (100 + 20)</span></div>`;
+                html += `<div><span class="label">Actual Shares:</span> <span class="value highlight">${afterHolding.totalQuantity}</span></div>`;
+                html += `<div><span class="label">Expected Avg Cost:</span> <span class="value">Rs. 83.33 (10,000 / 120)</span></div>`;
+                html += `<div><span class="label">Actual Avg Cost:</span> <span class="value highlight">${formatCurrency(afterHolding.averageCost)}</span></div>`;
+                html += `<div><span class="label">Cost Basis Unchanged:</span> <span class="value">${formatCurrency(beforeHolding.totalCostBasis)} = ${formatCurrency(afterHolding.totalCostBasis)}</span></div>`;
+
+                const sharesMatch = afterHolding.totalQuantity === 120;
+                const costMatch = Math.abs(afterHolding.averageCost - 83.33) < 0.1;
+                const basisMatch = Math.abs(beforeHolding.totalCostBasis - afterHolding.totalCostBasis) < 0.01;
+
+                html += `<div style="margin-top: 10px; font-size: 16px;"><strong>${sharesMatch && costMatch && basisMatch ? '✓ ALL CHECKS PASSED' : '✗ SOME CHECKS FAILED'}</strong></div>`;
+                html += '</div>';
+
+                html += `<div class="test-section info">`;
+                html += `<strong>Summary:</strong> ${result.result.summary}`;
+                html += `</div>`;
+
+            } catch (error) {
+                html += `<div class="test-section error"><strong>Error:</strong> ${error.message}</div>`;
+            }
+
+            document.getElementById('test1Results').innerHTML = html;
+        }
+
+        // Test 2: Right Issue
+        function test2RightIssue() {
+            const fifoQueue = new FIFOQueue();
+            const storageManager = new StorageManager();
+            const corporateActions = new CorporateActionsManager(fifoQueue, storageManager);
+
+            let html = '<h3>Scenario: 1:5 Right Issue @ Rs. 80 for PPL</h3>';
+
+            try {
+                // Initial purchase
+                fifoQueue.addTransaction('BUY', 'PPL', 100, 100, '2024-01-15');
+
+                const beforeHolding = fifoQueue.getHoldings()['PPL'];
+
+                html += '<div class="before-after">';
+                html += '<div class="before">';
+                html += '<h4>Before Right Issue</h4>';
+                html += `<div class="metric"><div class="label">Shares:</div><div class="metric-value">${beforeHolding.totalQuantity}</div></div>`;
+                html += `<div class="metric"><div class="label">Avg Cost:</div><div class="metric-value">${formatCurrency(beforeHolding.averageCost)}</div></div>`;
+                html += `<div class="metric"><div class="label">Total Cost:</div><div class="metric-value">${formatCurrency(beforeHolding.totalCostBasis)}</div></div>`;
+                html += '</div>';
+
+                // Apply right issue (1:5 means 1 right share for every 5 held)
+                const result = corporateActions.applyCorporateAction('PPL', 'RIGHT', {
+                    ratio: '1:5',
+                    price: 80,
+                    exDate: '2025-03-01',
+                    subscriptionDate: '2025-03-15'
+                });
+
+                const afterHolding = fifoQueue.getHoldings()['PPL'];
+
+                html += '<div class="after">';
+                html += '<h4>After Right Issue</h4>';
+                html += `<div class="metric"><div class="label">Shares:</div><div class="metric-value">${afterHolding.totalQuantity}</div></div>`;
+                html += `<div class="metric"><div class="label">Avg Cost:</div><div class="metric-value">${formatCurrency(afterHolding.averageCost)}</div></div>`;
+                html += `<div class="metric"><div class="label">Total Cost:</div><div class="metric-value">${formatCurrency(afterHolding.totalCostBasis)}</div></div>`;
+                html += '</div>';
+                html += '</div>';
+
+                // Calculation details
+                html += '<div class="test-section info">';
+                html += '<h4>Calculation Details</h4>';
+                html += `<div>Eligible Shares: 100</div>`;
+                html += `<div>Right Ratio: 1:5 = 0.2 = 20%</div>`;
+                html += `<div>Right Shares Entitled: 100 × 0.2 = <strong>20 shares</strong></div>`;
+                html += `<div>Right Price: Rs. 80 per share</div>`;
+                html += `<div>Cost of Rights: 20 × 80 = <strong>Rs. 1,600</strong></div>`;
+                html += `<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #cbd5e1;">`;
+                html += `<div>Original Cost: Rs. 10,000</div>`;
+                html += `<div>Right Cost: Rs. 1,600</div>`;
+                html += `<div><strong>New Total Cost: Rs. 11,600</strong></div>`;
+                html += `<div><strong>New Avg Cost: 11,600 / 120 = Rs. 96.67</strong></div>`;
+                html += '</div></div>';
+
+                // Verification
+                html += '<div class="test-section success">';
+                html += '<h4>✓ Verification</h4>';
+                html += `<div><span class="label">Expected Shares:</span> <span class="value">120 (100 + 20)</span></div>`;
+                html += `<div><span class="label">Actual Shares:</span> <span class="value highlight">${afterHolding.totalQuantity}</span></div>`;
+                html += `<div><span class="label">Expected Total Cost:</span> <span class="value">Rs. 11,600</span></div>`;
+                html += `<div><span class="label">Actual Total Cost:</span> <span class="value highlight">${formatCurrency(afterHolding.totalCostBasis)}</span></div>`;
+                html += `<div><span class="label">Expected Avg Cost:</span> <span class="value">Rs. 96.67</span></div>`;
+                html += `<div><span class="label">Actual Avg Cost:</span> <span class="value highlight">${formatCurrency(afterHolding.averageCost)}</span></div>`;
+
+                const sharesMatch = afterHolding.totalQuantity === 120;
+                const costMatch = Math.abs(afterHolding.totalCostBasis - 11600) < 0.1;
+                const avgMatch = Math.abs(afterHolding.averageCost - 96.67) < 0.1;
+
+                html += `<div style="margin-top: 10px; font-size: 16px;"><strong>${sharesMatch && costMatch && avgMatch ? '✓ ALL CHECKS PASSED' : '✗ SOME CHECKS FAILED'}</strong></div>`;
+                html += '</div>';
+
+                // Check lots
+                html += '<div class="test-section">';
+                html += '<h4>FIFO Lots After Right Issue</h4>';
+                html += '<table class="comparison-table">';
+                html += '<tr><th>Lot</th><th>Quantity</th><th>Price</th><th>Date</th><th>Type</th></tr>';
+
+                const lots = fifoQueue.holdings['PPL'];
+                for (let i = 0; i < lots.length; i++) {
+                    const lot = lots[i];
+                    const isRightLot = lot.originalTransaction && lot.originalTransaction.type === 'RIGHT_ISSUE';
+                    html += `<tr>`;
+                    html += `<td>Lot ${i + 1}</td>`;
+                    html += `<td>${lot.remainingQuantity}</td>`;
+                    html += `<td>${formatCurrency(lot.price)}</td>`;
+                    html += `<td>${formatDate(lot.purchaseDate)}</td>`;
+                    html += `<td>${isRightLot ? '<span class="highlight">RIGHT ISSUE</span>' : 'Original'}</td>`;
+                    html += `</tr>`;
+                }
+                html += '</table></div>';
+
+                html += `<div class="test-section info">`;
+                html += `<strong>Summary:</strong> ${result.result.summary}`;
+                html += `</div>`;
+
+            } catch (error) {
+                html += `<div class="test-section error"><strong>Error:</strong> ${error.message}</div>`;
+            }
+
+            document.getElementById('test2Results').innerHTML = html;
+        }
+
+        // Test 3: Multiple Actions
+        function test3MultipleActions() {
+            const fifoQueue = new FIFOQueue();
+            const storageManager = new StorageManager();
+            const corporateActions = new CorporateActionsManager(fifoQueue, storageManager);
+
+            let html = '<h3>Scenario: Multiple Corporate Actions on Same Stock</h3>';
+
+            try {
+                // Initial purchase
+                fifoQueue.addTransaction('BUY', 'MARI', 100, 1500, '2024-01-15');
+
+                const step1 = fifoQueue.getHoldings()['MARI'];
+                html += `<div class="test-section"><strong>Step 1: Initial Purchase</strong><br>100 shares @ Rs. 1,500 = Rs. 150,000</div>`;
+
+                // Apply 10% bonus
+                corporateActions.applyCorporateAction('MARI', 'BONUS', {
+                    ratio: '10%',
+                    exDate: '2025-02-01'
+                });
+
+                const step2 = fifoQueue.getHoldings()['MARI'];
+                html += `<div class="test-section success"><strong>Step 2: 10% Bonus Applied</strong><br>`;
+                html += `${step1.totalQuantity} → ${step2.totalQuantity} shares<br>`;
+                html += `Avg Cost: ${formatCurrency(step1.averageCost)} → ${formatCurrency(step2.averageCost)}`;
+                html += `</div>`;
+
+                // Apply 1:10 right issue
+                corporateActions.applyCorporateAction('MARI', 'RIGHT', {
+                    ratio: '1:10',
+                    price: 1200,
+                    exDate: '2025-03-01'
+                });
+
+                const step3 = fifoQueue.getHoldings()['MARI'];
+                html += `<div class="test-section success"><strong>Step 3: 1:10 Right Issue @ Rs. 1,200</strong><br>`;
+                html += `${step2.totalQuantity} → ${step3.totalQuantity} shares<br>`;
+                html += `Avg Cost: ${formatCurrency(step2.averageCost)} → ${formatCurrency(step3.averageCost)}<br>`;
+                html += `Total Cost: ${formatCurrency(step2.totalCostBasis)} → ${formatCurrency(step3.totalCostBasis)}`;
+                html += `</div>`;
+
+                // Summary table
+                html += '<h4 style="margin-top: 20px;">Summary</h4>';
+                html += '<table class="comparison-table">';
+                html += '<tr><th>Stage</th><th>Shares</th><th>Avg Cost</th><th>Total Cost</th></tr>';
+                html += `<tr><td>Initial</td><td>${step1.totalQuantity}</td><td>${formatCurrency(step1.averageCost)}</td><td>${formatCurrency(step1.totalCostBasis)}</td></tr>`;
+                html += `<tr><td>After 10% Bonus</td><td>${step2.totalQuantity}</td><td>${formatCurrency(step2.averageCost)}</td><td>${formatCurrency(step2.totalCostBasis)}</td></tr>`;
+                html += `<tr><td>After Right Issue</td><td>${step3.totalQuantity}</td><td>${formatCurrency(step3.averageCost)}</td><td>${formatCurrency(step3.totalCostBasis)}</td></tr>`;
+                html += '</table>';
+
+            } catch (error) {
+                html += `<div class="test-section error"><strong>Error:</strong> ${error.message}</div>`;
+            }
+
+            document.getElementById('test3Results').innerHTML = html;
+        }
+
+        // Test 4: Validation
+        function test4Validation() {
+            const fifoQueue = new FIFOQueue();
+            const storageManager = new StorageManager();
+            const corporateActions = new CorporateActionsManager(fifoQueue, storageManager);
+
+            let html = '<h3>Testing Error Handling & Validation</h3>';
+
+            const tests = [
+                {
+                    name: 'Apply action without holdings',
+                    fn: () => corporateActions.applyCorporateAction('XYZ', 'BONUS', { ratio: '10%', exDate: '2025-03-01' }),
+                    shouldFail: true,
+                    expectedError: 'No holdings found'
+                },
+                {
+                    name: 'Apply duplicate action',
+                    fn: () => {
+                        fifoQueue.addTransaction('BUY', 'TEST', 100, 100, '2024-01-15');
+                        corporateActions.applyCorporateAction('TEST', 'BONUS', { ratio: '10%', exDate: '2025-03-01' });
+                        corporateActions.applyCorporateAction('TEST', 'BONUS', { ratio: '10%', exDate: '2025-03-01' });
+                    },
+                    shouldFail: true,
+                    expectedError: 'already applied'
+                },
+                {
+                    name: 'Invalid bonus ratio',
+                    fn: () => {
+                        fifoQueue.addTransaction('BUY', 'TEST2', 100, 100, '2024-01-15');
+                        corporateActions.applyCorporateAction('TEST2', 'BONUS', { ratio: '150%', exDate: '2025-03-01' });
+                    },
+                    shouldFail: true,
+                    expectedError: 'Invalid bonus ratio'
+                },
+                {
+                    name: 'Invalid right ratio',
+                    fn: () => {
+                        fifoQueue.addTransaction('BUY', 'TEST3', 100, 100, '2024-01-15');
+                        corporateActions.applyCorporateAction('TEST3', 'RIGHT', { ratio: 'invalid', price: 80, exDate: '2025-03-01' });
+                    },
+                    shouldFail: true,
+                    expectedError: 'Invalid right ratio'
+                },
+                {
+                    name: 'Missing required fields',
+                    fn: () => {
+                        fifoQueue.addTransaction('BUY', 'TEST4', 100, 100, '2024-01-15');
+                        corporateActions.applyCorporateAction('TEST4', 'BONUS', { exDate: '2025-03-01' });
+                    },
+                    shouldFail: true,
+                    expectedError: 'ratio is required'
+                }
+            ];
+
+            for (const test of tests) {
+                let passed = false;
+                let errorMsg = '';
+
+                try {
+                    test.fn();
+                    passed = !test.shouldFail;
+                } catch (error) {
+                    errorMsg = error.message;
+                    passed = test.shouldFail && errorMsg.toLowerCase().includes(test.expectedError.toLowerCase());
+                }
+
+                const statusClass = passed ? 'success' : 'error';
+                const statusIcon = passed ? '✓' : '✗';
+
+                html += `<div class="test-section ${statusClass}">`;
+                html += `<strong>${statusIcon} ${test.name}</strong><br>`;
+                html += `Expected: ${test.shouldFail ? 'Should fail with "' + test.expectedError + '"' : 'Should succeed'}<br>`;
+                if (errorMsg) {
+                    html += `Got: ${errorMsg}<br>`;
+                }
+                html += `Result: <strong>${passed ? 'PASSED' : 'FAILED'}</strong>`;
+                html += `</div>`;
+            }
+
+            document.getElementById('test4Results').innerHTML = html;
+        }
+
+        // Display summary
+        function displaySummary() {
+            const fifoQueue = new FIFOQueue();
+            const storageManager = new StorageManager();
+            const corporateActions = new CorporateActionsManager(fifoQueue, storageManager);
+
+            // Add some sample data
+            fifoQueue.addTransaction('BUY', 'HBL', 100, 100, '2024-01-15');
+            corporateActions.applyCorporateAction('HBL', 'BONUS', { ratio: '20%', exDate: '2025-03-01' });
+
+            fifoQueue.addTransaction('BUY', 'PPL', 100, 100, '2024-01-15');
+            corporateActions.applyCorporateAction('PPL', 'RIGHT', { ratio: '1:5', price: 80, exDate: '2025-03-01' });
+
+            const summary = corporateActions.getSummary();
+
+            let html = `<div class="test-section info">`;
+            html += `<div><span class="label">Total Actions:</span> <span class="value">${summary.totalActions}</span></div>`;
+            html += `<div><span class="label">Bonus Actions:</span> <span class="value">${summary.bonusActions}</span></div>`;
+            html += `<div><span class="label">Right Actions:</span> <span class="value">${summary.rightActions}</span></div>`;
+            html += `<div><span class="label">Symbols Affected:</span> <span class="value">${summary.symbolsAffected.join(', ')}</span></div>`;
+            html += `</div>`;
+
+            document.getElementById('summaryResults').innerHTML = html;
+
+            // Generate report
+            const report = corporateActions.generateReport();
+            document.getElementById('reportResults').textContent = report;
+        }
+
+        // Run all tests
+        function runAllTests() {
+            test1BonusShares();
+            test2RightIssue();
+            test3MultipleActions();
+            test4Validation();
+            displaySummary();
+        }
+
+        // Run tests on page load
+        runAllTests();
+    </script>
+</body>
+</html>

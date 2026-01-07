@@ -1,0 +1,23 @@
+{
+  "appId": "com.pakfolio.taxcalculator",
+  "appName": "PakFolio",
+  "webDir": "mobile",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "buildOptions": {
+      "releaseType": "AAB"
+    }
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0C4B33",
+      "showSpinner": false,
+      "androidSpinnerStyle": "small",
+      "spinnerColor": "#FFFFFF"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "pakfolio",
+  "version": "1.0.0",
+  "description": "PakFolio - Pakistan Stock Tax Calculator (Mobile App)",
+  "main": "index.html",
+  "scripts": {
+    "sync": "npx cap sync",
+    "sync:android": "npx cap sync android",
+    "open:android": "npx cap open android",
+    "run:android": "npx cap run android",
+    "run:android:live": "npx cap run android --livereload --external",
+    "build:apk": "cd android && gradlew assembleRelease",
+    "build:aab": "cd android && gradlew bundleRelease",
+    "clean:android": "cd android && gradlew clean",
+    "update": "npx cap update"
+  },
+  "keywords": [
+    "pakistan",
+    "stock",
+    "tax",
+    "calculator",
+    "fifo",
+    "capital-gains",
+    "psx",
+    "pakfolio"
+  ],
+  "author": "PakFolio Team",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0"
+  }
+}

@@ -1,0 +1,375 @@
+/**
+ * Forms Styling - Mobile App
+ * Form-specific styles for transaction entry and other forms
+ */
+
+/* Form Content Container */
+.form-content {
+    padding: var(--spacing-md);
+    padding-bottom: calc(var(--bottom-nav-height) + var(--spacing-md));
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Form Labels */
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Toggle Buttons */
+.toggle-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+    padding: 4px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+}
+
+.toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 44px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-btn:active {
+    transform: scale(0.98);
+}
+
+.toggle-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(12, 75, 51, 0.3);
+}
+
+.toggle-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Input Wrapper */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    right: var(--spacing-sm);
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+.input-prefix {
+    position: absolute;
+    left: var(--spacing-sm);
+    color: var(--text-secondary);
+    font-weight: 600;
+    pointer-events: none;
+}
+
+/* Form Inputs */
+.form-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 44px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.form-input.selectable {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(12, 75, 51, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Input with icon padding */
+.input-wrapper .form-input {
+    padding-right: 40px;
+}
+
+/* Input with prefix padding */
+.input-wrapper .input-prefix + .form-input {
+    padding-left: 48px;
+}
+
+/* Textarea */
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+
+.form-textarea.selectable {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(12, 75, 51, 0.1);
+}
+
+/* Help Text */
+.help-text {
+    margin-top: var(--spacing-xs);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+}
+
+.help-text svg {
+    flex-shrink: 0;
+}
+
+/* Cost Summary */
+.cost-summary {
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.cost-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+}
+
+.cost-row.total {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 2px solid var(--border-color);
+}
+
+.cost-label {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+}
+
+.cost-row.total .cost-label {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.cost-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.cost-row.total .cost-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Tax Preview */
+.tax-preview {
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, rgba(12, 75, 51, 0.05), rgba(12, 75, 51, 0.1));
+    border: 2px solid rgba(12, 75, 51, 0.2);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.preview-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.preview-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.preview-label {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+.preview-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.preview-value.highlight {
+    color: var(--danger);
+    font-size: 1.125rem;
+}
+
+/* Form Actions */
+.form-actions {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+}
+
+/* Buttons */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    min-height: 48px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(12, 75, 51, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + var(--spacing-md));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--success);
+    color: white;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.toast svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .toggle-btn.active {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .form-input:focus,
+[data-theme="dark"] .form-textarea:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] .tax-preview {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.1));
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="dark"] .btn-primary {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 360px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-grid {
+        grid-template-columns: 1fr;
+    }
+}

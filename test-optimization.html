@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pakistan Stock Tax Calculator - Optimization Features Test</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #2563eb; margin-bottom: 10px; }
+        h2 { color: #1e40af; margin: 30px 0 15px; border-bottom: 2px solid #2563eb; padding-bottom: 8px; }
+        h3 { color: #64748b; margin: 20px 0 10px; }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .optimization-item {
+            background: #f8fafc;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #2563eb;
+            border-radius: 4px;
+        }
+
+        .optimization-item.high-priority { border-left-color: #ef4444; background: #fef2f2; }
+        .optimization-item.medium-priority { border-left-color: #f59e0b; background: #fffbeb; }
+        .optimization-item.low-priority { border-left-color: #10b981; background: #f0fdf4; }
+
+        .label { font-weight: 600; color: #475569; display: inline-block; min-width: 180px; }
+        .value { color: #1e293b; font-weight: 500; }
+        .positive { color: #10b981; font-weight: 700; }
+        .negative { color: #ef4444; font-weight: 700; }
+
+        .summary-box {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .summary-box h3 { color: white; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 10px;
+        }
+
+        .badge.high { background: #fee2e2; color: #991b1b; }
+        .badge.medium { background: #fef3c7; color: #92400e; }
+        .badge.low { background: #d1fae5; color: #065f46; }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .metric {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-label { font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        .metric-value { font-size: 24px; font-weight: 700; color: #1e293b; }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .card { padding: 15px; }
+            .metric-grid { grid-template-columns: 1fr; }
+            .label { min-width: 120px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pakistan Stock Tax Calculator - Optimization Features</h1>
+        <p style="color: #64748b; margin-bottom: 30px;">Testing the four new optimization features with Pakistan Standard Time</p>
+
+        <!-- Test Input -->
+        <div class="card">
+            <h2>Test Input Data</h2>
+            <pre id="inputData"></pre>
+        </div>
+
+        <!-- Feature 1: Holding Period Optimizer -->
+        <div class="card">
+            <h2>1. Holding Period Optimizer</h2>
+            <p style="color: #64748b; margin-bottom: 15px;">Scans holdings for stocks approaching 1-year, 2-year, 3-year, and 4-year milestones</p>
+            <div id="holdingPeriodResults"></div>
+        </div>
+
+        <!-- Feature 2: Loss Harvesting Suggester -->
+        <div class="card">
+            <h2>2. Loss Harvesting Suggester</h2>
+            <p style="color: #64748b; margin-bottom: 15px;">Identifies stocks at a loss and calculates tax offset against realized gains</p>
+            <div id="lossHarvestingResults"></div>
+        </div>
+
+        <!-- Feature 3: Filer vs Non-Filer Comparison -->
+        <div class="card">
+            <h2>3. Filer vs Non-Filer Comparison</h2>
+            <p style="color: #64748b; margin-bottom: 15px;">Shows side-by-side tax liability comparison</p>
+            <div id="filerComparisonResults"></div>
+        </div>
+
+        <!-- Feature 4: Year-End Tax Projector -->
+        <div class="card">
+            <h2>4. Year-End Tax Projector (Pakistan Fiscal Year: July 1 - June 30)</h2>
+            <p style="color: #64748b; margin-bottom: 15px;">Projects total tax liability and suggests actions before fiscal year end</p>
+            <div id="yearEndResults"></div>
+        </div>
+
+        <!-- Complete Optimization Report -->
+        <div class="card">
+            <h2>Complete Optimization Report</h2>
+            <p style="color: #64748b; margin-bottom: 15px;">Master function combining all four features</p>
+            <div id="completeReport"></div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript Modules -->
+    <script src="js/fifo-engine.js"></script>
+    <script src="js/tax-calculator.js"></script>
+    <script src="js/what-if-scenarios.js"></script>
+
+    <script>
+        // Test data setup
+        function setupTestData() {
+            const fifoQueue = new FIFOQueue();
+            const taxCalculator = new TaxCalculator();
+            const whatIfScenarios = new WhatIfScenarios(fifoQueue, taxCalculator);
+
+            // Set as filer
+            taxCalculator.setFilerStatus(true);
+
+            // Scenario 1: Legacy stock approaching 1-year mark (acquired before July 1, 2024)
+            // Purchased 340 days ago - 25 days until 1-year milestone
+            const date340DaysAgo = new Date();
+            date340DaysAgo.setDate(date340DaysAgo.getDate() - 340);
+            fifoQueue.addTransaction('BUY', 'OGDC', 100, 100, date340DaysAgo);
+
+            // Scenario 2: New regime stock (acquired after July 1, 2024) - no benefit from waiting
+            fifoQueue.addTransaction('BUY', 'PPL', 200, 85, '2024-09-01');
+
+            // Scenario 3: Stock at a loss (for loss harvesting)
+            fifoQueue.addTransaction('BUY', 'MEBL', 200, 90, '2024-08-15');
+
+            // Scenario 4: Profitable stock
+            fifoQueue.addTransaction('BUY', 'MARI', 50, 1500, '2024-10-01');
+
+            // Add some realized gains for loss harvesting offset
+            fifoQueue.addTransaction('BUY', 'HBL', 300, 150, '2024-07-01');
+            fifoQueue.addTransaction('SELL', 'HBL', 300, 180, '2024-12-15'); // Rs. 9,000 gain
+
+            return { fifoQueue, taxCalculator, whatIfScenarios };
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return `Rs. ${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+        }
+
+        // Format date
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-PK', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Run tests
+        function runTests() {
+            const { fifoQueue, taxCalculator, whatIfScenarios } = setupTestData();
+
+            // Display input data
+            const inputData = {
+                holdings: [
+                    { symbol: "OGDC", quantity: 100, avgCost: 100, currentPrice: 120, purchaseDate: "340 days ago" },
+                    { symbol: "PPL", quantity: 200, avgCost: 85, currentPrice: 95, purchaseDate: "2024-09-01" },
+                    { symbol: "MEBL", quantity: 200, avgCost: 90, currentPrice: 75, purchaseDate: "2024-08-15" },
+                    { symbol: "MARI", quantity: 50, avgCost: 1500, currentPrice: 1650, purchaseDate: "2024-10-01" }
+                ],
+                realizedGains: 9000,
+                isFiler: true
+            };
+
+            document.getElementById('inputData').textContent = JSON.stringify(inputData, null, 2);
+
+            // Current prices
+            const currentPrices = {
+                'OGDC': 120,  // +20 gain
+                'PPL': 95,    // +10 gain
+                'MEBL': 75,   // -15 loss
+                'MARI': 1650, // +150 gain
+                'HBL': 180    // Already sold
+            };
+
+            // Test Feature 1: Holding Period Optimizer
+            const holdingPeriodOpps = whatIfScenarios.scanHoldingPeriodOpportunities(currentPrices);
+            displayHoldingPeriodResults(holdingPeriodOpps);
+
+            // Test Feature 2: Loss Harvesting
+            const lossHarvestingSuggestions = whatIfScenarios.suggestLossHarvesting(currentPrices, 9000);
+            displayLossHarvestingResults(lossHarvestingSuggestions);
+
+            // Test Feature 3: Filer vs Non-Filer
+            const filerComparison = whatIfScenarios.compareFilingStatusPortfolio(currentPrices);
+            displayFilerComparisonResults(filerComparison);
+
+            // Test Feature 4: Year-End Projection
+            const yearEndProjection = whatIfScenarios.projectYearEndTax(currentPrices);
+            displayYearEndResults(yearEndProjection);
+
+            // Test Complete Report
+            const completeReport = whatIfScenarios.generateCompleteOptimizationReport(inputData);
+            displayCompleteReport(completeReport);
+        }
+
+        // Display functions
+        function displayHoldingPeriodResults(opportunities) {
+            const container = document.getElementById('holdingPeriodResults');
+
+            if (opportunities.length === 0) {
+                container.innerHTML = '<p style="color: #64748b; font-style: italic;">No holding period optimization opportunities found. (New regime stocks have flat 15% rate)</p>';
+                return;
+            }
+
+            let html = `<div class="summary-box"><h3>Found ${opportunities.length} Optimization Opportunities</h3></div>`;
+
+            for (const opp of opportunities) {
+                html += `
+                    <div class="optimization-item high-priority">
+                        <h3>${opp.stock} <span class="badge high">Save ${formatCurrency(opp.savings)}</span></h3>
+                        <div style="margin: 10px 0;">
+                            <div><span class="label">Recommendation:</span> <span class="value">${opp.recommendation}</span></div>
+                            <div><span class="label">Current Tax:</span> <span class="value">${formatCurrency(opp.currentTax)} (${opp.currentTaxRate})</span></div>
+                            <div><span class="label">After Waiting:</span> <span class="value positive">${formatCurrency(opp.optimizedTax)} (${opp.targetTaxRate})</span></div>
+                            <div><span class="label">Tax Savings:</span> <span class="value positive">${formatCurrency(opp.savings)}</span></div>
+                            <div><span class="label">Milestone Date:</span> <span class="value">${formatDate(opp.milestoneDate)}</span></div>
+                        </div>
+                        <p style="background: white; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 14px;">
+                            <strong>Explanation:</strong> ${opp.explanation}
+                        </p>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function displayLossHarvestingResults(suggestions) {
+            const container = document.getElementById('lossHarvestingResults');
+
+            if (suggestions.length === 0) {
+                container.innerHTML = '<p style="color: #64748b; font-style: italic;">No loss harvesting opportunities found.</p>';
+                return;
+            }
+
+            let html = `<div class="summary-box"><h3>Found ${suggestions.length} Loss Harvesting Opportunities</h3></div>`;
+
+            for (const sugg of suggestions) {
+                html += `
+                    <div class="optimization-item medium-priority">
+                        <h3>${sugg.stock} <span class="badge medium">Save ${formatCurrency(sugg.taxSavings)}</span></h3>
+                        <div style="margin: 10px 0;">
+                            <div><span class="label">Recommendation:</span> <span class="value">${sugg.recommendation}</span></div>
+                            <div><span class="label">Unrealized Loss:</span> <span class="value negative">${formatCurrency(sugg.unrealizedLoss)} (${sugg.lossPercentage}%)</span></div>
+                            <div><span class="label">Offsets Gains:</span> <span class="value">${formatCurrency(sugg.realizedGainsToOffset)}</span></div>
+                            <div><span class="label">Tax Savings:</span> <span class="value positive">${formatCurrency(sugg.taxSavings)}</span></div>
+                        </div>
+                        <p style="background: white; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 14px;">
+                            <strong>Explanation:</strong> ${sugg.explanation}
+                        </p>
+                        <div style="background: white; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 13px;">
+                            <strong>Breakdown:</strong>
+                            <div style="margin-left: 15px; margin-top: 5px;">
+                                Cost Basis: ${formatCurrency(sugg.detailedBreakdown.costBasis)}<br>
+                                Current Value: ${formatCurrency(sugg.detailedBreakdown.currentValue)}<br>
+                                Realized Loss: ${formatCurrency(sugg.detailedBreakdown.realizedLoss)}<br>
+                                Your Realized Gains: ${formatCurrency(sugg.detailedBreakdown.yourRealizedGains)}<br>
+                                Tax Rate: ${sugg.detailedBreakdown.taxRate}<br>
+                                <strong>Tax Savings: ${formatCurrency(sugg.detailedBreakdown.taxSavings)}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function displayFilerComparisonResults(comparison) {
+            const container = document.getElementById('filerComparisonResults');
+
+            const html = `
+                <div class="summary-box">
+                    <h3>Current Status: ${comparison.currentStatus}</h3>
+                    <div class="metric-grid" style="margin-top: 15px;">
+                        <div class="metric" style="background: rgba(255,255,255,0.2);">
+                            <div class="metric-label" style="color: rgba(255,255,255,0.8);">Difference</div>
+                            <div class="metric-value" style="color: white;">${formatCurrency(comparison.difference)}</div>
+                        </div>
+                        <div class="metric" style="background: rgba(255,255,255,0.2);">
+                            <div class="metric-label" style="color: rgba(255,255,255,0.8);">Savings %</div>
+                            <div class="metric-value" style="color: white;">${comparison.savingsPercentage}%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-grid">
+                    <div class="metric">
+                        <h4 style="color: #10b981; margin-bottom: 10px;">Filer</h4>
+                        <div><span class="label">Realized Tax:</span> ${formatCurrency(comparison.filer.realizedTax)}</div>
+                        <div><span class="label">Unrealized Tax:</span> ${formatCurrency(comparison.filer.unrealizedTax)}</div>
+                        <div><strong>Total Tax:</strong> ${formatCurrency(comparison.filer.totalTax)}</div>
+                    </div>
+                    <div class="metric">
+                        <h4 style="color: #ef4444; margin-bottom: 10px;">Non-Filer</h4>
+                        <div><span class="label">Realized Tax:</span> ${formatCurrency(comparison.nonFiler.realizedTax)}</div>
+                        <div><span class="label">Unrealized Tax:</span> ${formatCurrency(comparison.nonFiler.unrealizedTax)}</div>
+                        <div><strong>Total Tax:</strong> ${formatCurrency(comparison.nonFiler.totalTax)}</div>
+                    </div>
+                </div>
+
+                <div class="optimization-item">
+                    <h3>Recommendation</h3>
+                    <p style="font-size: 15px; margin: 10px 0;">${comparison.recommendation}</p>
+                    <p style="font-size: 14px; color: #64748b; margin-top: 10px;">${comparison.explanation}</p>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function displayYearEndResults(projection) {
+            const container = document.getElementById('yearEndResults');
+
+            const urgencyClass = projection.urgencyLevel === 'HIGH' ? 'high' : projection.urgencyLevel === 'MEDIUM' ? 'medium' : 'low';
+
+            let html = `
+                <div class="summary-box">
+                    <h3>Fiscal Year ${projection.fiscalYear.start.getFullYear()}-${projection.fiscalYear.end.getFullYear()}
+                    <span class="badge ${urgencyClass}">${projection.urgencyLevel} Urgency</span></h3>
+                    <div class="metric-grid" style="margin-top: 15px;">
+                        <div class="metric" style="background: rgba(255,255,255,0.2);">
+                            <div class="metric-label" style="color: rgba(255,255,255,0.8);">Days Remaining</div>
+                            <div class="metric-value" style="color: white;">${projection.fiscalYear.daysRemaining}</div>
+                        </div>
+                        <div class="metric" style="background: rgba(255,255,255,0.2);">
+                            <div class="metric-label" style="color: rgba(255,255,255,0.8);">Progress</div>
+                            <div class="metric-value" style="color: white;">${projection.fiscalYear.progressPercentage}%</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 14px;">${projection.summary}</p>
+                </div>
+
+                <div class="metric-grid">
+                    <div class="metric">
+                        <h4 style="margin-bottom: 10px;">Realized (YTD)</h4>
+                        <div><span class="label">Gains:</span> ${formatCurrency(projection.realized.gains)}</div>
+                        <div><span class="label">Losses:</span> ${formatCurrency(projection.realized.losses)}</div>
+                        <div><span class="label">Net:</span> <strong>${formatCurrency(projection.realized.netGain)}</strong></div>
+                        <div><span class="label">Tax:</span> <strong class="negative">${formatCurrency(projection.realized.tax)}</strong></div>
+                    </div>
+                    <div class="metric">
+                        <h4 style="margin-bottom: 10px;">Unrealized</h4>
+                        <div><span class="label">Gains:</span> ${formatCurrency(projection.unrealized.gains)}</div>
+                        <div><span class="label">Losses:</span> ${formatCurrency(projection.unrealized.losses)}</div>
+                        <div><span class="label">Potential Tax:</span> <strong class="negative">${formatCurrency(projection.unrealized.potentialTax)}</strong></div>
+                    </div>
+                    <div class="metric">
+                        <h4 style="margin-bottom: 10px;">Projection</h4>
+                        <div><span class="label">Current Tax:</span> ${formatCurrency(projection.projection.totalTaxLiability)}</div>
+                        <div><span class="label">Potential Add'l:</span> ${formatCurrency(projection.projection.potentialAdditionalTax)}</div>
+                        <div><span class="label">Max Tax:</span> <strong class="negative">${formatCurrency(projection.projection.maxTaxLiability)}</strong></div>
+                    </div>
+                </div>
+            `;
+
+            if (projection.recommendations.length > 0) {
+                html += '<h3 style="margin: 20px 0 10px;">Recommendations Before Year End</h3>';
+                for (const rec of projection.recommendations) {
+                    const priorityClass = rec.priority === 1 ? 'high-priority' : rec.priority === 2 ? 'medium-priority' : 'low-priority';
+                    html += `
+                        <div class="optimization-item ${priorityClass}">
+                            <h4>${rec.action} ${rec.potentialSavings ? `<span class="badge ${urgencyClass}">Save ${formatCurrency(rec.potentialSavings)}</span>` : ''}</h4>
+                            <p style="margin: 10px 0;">${rec.description}</p>
+                            ${rec.deadline ? `<p style="font-size: 13px; color: #64748b;">Deadline: ${formatDate(rec.deadline)}</p>` : ''}
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        function displayCompleteReport(report) {
+            const container = document.getElementById('completeReport');
+
+            let html = `
+                <div class="summary-box">
+                    <h3>Complete Tax Optimization Analysis</h3>
+                    <div style="margin-top: 10px; font-size: 14px;">
+                        Generated: ${formatDate(report.generatedAt)}<br>
+                        Timezone: ${report.timezone}<br>
+                        Status: ${report.isFiler ? 'Filer' : 'Non-Filer'}
+                    </div>
+                    <div class="metric" style="background: rgba(255,255,255,0.2); margin-top: 15px;">
+                        <div class="metric-label" style="color: rgba(255,255,255,0.8);">Total Potential Savings</div>
+                        <div class="metric-value" style="color: white;">${formatCurrency(report.totalPotentialSavings)}</div>
+                    </div>
+                </div>
+            `;
+
+            if (report.topRecommendation) {
+                html += `
+                    <div class="optimization-item high-priority">
+                        <h3>Top Recommendation</h3>
+                        <div style="margin: 10px 0;">
+                            <div><span class="label">Type:</span> <span class="value">${report.topRecommendation.type}</span></div>
+                            <div><span class="label">Stock:</span> <span class="value">${report.topRecommendation.stock || 'Portfolio-wide'}</span></div>
+                            <div><span class="label">Recommendation:</span> <span class="value">${report.topRecommendation.recommendation}</span></div>
+                            <div><span class="label">Savings:</span> <span class="value positive">${formatCurrency(report.topRecommendation.savings || report.topRecommendation.taxSavings)}</span></div>
+                        </div>
+                        ${report.topRecommendation.explanation ? `<p style="margin-top: 10px; font-size: 14px;">${report.topRecommendation.explanation}</p>` : ''}
+                    </div>
+                `;
+            }
+
+            html += '<h3 style="margin: 20px 0 10px;">Summary by Feature</h3>';
+            html += `
+                <div class="metric-grid">
+                    <div class="metric">
+                        <div class="metric-label">Holding Period Optimizations</div>
+                        <div class="metric-value">${report.holdingPeriodOptimizations.length}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Loss Harvesting Opportunities</div>
+                        <div class="metric-value">${report.lossHarvestingOpportunities.length}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Filer Savings</div>
+                        <div class="metric-value">${formatCurrency(report.filerComparison.savings)}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Year-End Urgency</div>
+                        <div class="metric-value">${report.yearEndProjection.urgencyLevel}</div>
+                    </div>
+                </div>
+            `;
+
+            if (report.urgentActions.length > 0) {
+                html += '<h3 style="margin: 20px 0 10px; color: #ef4444;">Urgent Actions</h3>';
+                for (const action of report.urgentActions) {
+                    html += `
+                        <div class="optimization-item high-priority">
+                            <h4>${action.action}</h4>
+                            <p>${action.description}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Run tests on page load
+        runTests();
+    </script>
+</body>
+</html>

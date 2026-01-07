@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "name": "pakfolio",
+  "builds": [
+    {
+      "src": "mobile/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/mobile/(.*)",
+      "dest": "/mobile/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/mobile/$1"
+    }
+  ],
+  "public": false,
+  "cleanUrls": true,
+  "trailingSlash": false
+}
