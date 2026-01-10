@@ -1,6 +1,6 @@
 # Pakistan Stock Tax Calculator - FIFO Capital Gains Tax Calculator
 
-A standalone JavaScript application for calculating capital gains tax on Pakistan Stock Exchange securities using the FIFO (First-In-First-Out) method.
+A standalone application for calculating capital gains tax on Pakistan Stock Exchange securities using the FIFO (First-In-First-Out) method.
 
 ## Features
 
