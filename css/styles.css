@@ -3254,7 +3254,7 @@ select option {
 .input-float input,
 .input-float select {
     width: 100%;
-    padding: 20px 16px 8px;
+    padding: 26px 16px 10px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
@@ -3293,7 +3293,7 @@ select option {
 
 .input-float input:focus + label,
 .input-float input:not(:placeholder-shown) + label {
-    top: 12px;
+    top: 8px;
     transform: translateY(0);
     font-size: 0.7rem;
     font-weight: 600;
@@ -3315,12 +3315,12 @@ select option {
 
 /* Date input specific styling */
 .input-float input[type="date"] {
-    padding-top: 20px;
-    padding-bottom: 8px;
+    padding-top: 26px;
+    padding-bottom: 10px;
 }
 
 .input-float input[type="date"] + label {
-    top: 12px;
+    top: 8px;
     transform: translateY(0);
     font-size: 0.7rem;
     font-weight: 600;
@@ -3810,7 +3810,7 @@ select option {
 /* Floating Label Select (for Corporate Actions) */
 .input-float select {
     width: 100%;
-    padding: 20px 16px 8px;
+    padding: 26px 16px 10px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
@@ -3840,7 +3840,7 @@ select option {
 }
 
 .input-float select + label {
-    top: 12px;
+    top: 8px;
     transform: translateY(0);
     font-size: 0.7rem;
     font-weight: 600;
