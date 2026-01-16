@@ -3254,7 +3254,7 @@ select option {
 .input-float input,
 .input-float select {
     width: 100%;
-    padding: 26px 16px 10px;
+    padding: 26px 80px 10px 16px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
@@ -3305,12 +3305,14 @@ select option {
 .input-float .input-hint {
     position: absolute;
     right: 16px;
-    top: 50%;
+    top: 55%;
     transform: translateY(-50%);
     font-size: 0.75rem;
     color: var(--text-muted);
     opacity: 0.6;
     pointer-events: none;
+    max-width: 60px;
+    text-align: right;
 }
 
 /* Date input specific styling */
